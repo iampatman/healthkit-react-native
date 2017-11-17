@@ -26,41 +26,37 @@ const instructions = Platform.select({
 });
 
 export default class App extends Component<{}> {
+    healthKitManager = HealthKitManager.getInstance()
 
     constructor() {
         super()
-
-        let healthKitManager = HealthKitManager.getInstance()
-        this.state = {
-            healthKitManager: healthKitManager
-        }
+        this.reloadData = this.reloadData.bind(this);
+        this.healthKitManager.setReloadCallback(this.reloadData)
         this.state = {
             age: 0,
             sex: 'Unknown',
-            available: false
+            available: false,
+            stepCount: 0
         }
     }
 
 
-    readBiologicalData() {
-        let healthKitManager = HealthKitManager.getInstance()
+    reloadData() {
         this.setState({
-            age: healthKitManager.getAge(),
-            sex: healthKitManager.getSex()
+            age: this.healthKitManager.getAge(),
+            sex: this.healthKitManager.getSex(),
+            stepCount: this.healthKitManager.getStepCount()
         })
     }
 
-    componentDidMount() {
-        this.readBiologicalData()
-    }
-
     render() {
+        console.debug('render')
+
         return (
             <View style={styles.container}>
-                <Text>Age12: {this.state.age}</Text>
+                <Text>Age: {this.state.age}</Text>
                 <Text>Sex: {this.state.sex}</Text>
-
-
+                <Text>Step Count: {this.state.stepCount}</Text>
             </View>
         );
     }

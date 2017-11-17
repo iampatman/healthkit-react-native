@@ -3,14 +3,23 @@ import AppleHealthKit from 'rn-apple-healthkit'
 
 export default class HealthKitManager {
 
+
+    reloadData = null
+
+    setReloadCallback(callback) {
+        this.reloadData = callback
+    }
+
     _data = {
+        loaded: false,
         available: false,
         age: 0,
         sex: 'unknown',
         dob: '',
         height: '',
         weight: '',
-        bloodType: ''
+        bloodType: '',
+        stepCount: 0
     }
 
     static myInstance = null;
@@ -28,7 +37,8 @@ export default class HealthKitManager {
     }
 
     constructor() {
-        AppleHealthKit.isAvailable((err: Object, available: boolean) => {
+
+        AppleHealthKit.isAvailable((err, available) => {
             this._data.available = available
             if (err) {
                 console.log("error initializing Healthkit: ", err);
@@ -52,38 +62,67 @@ export default class HealthKitManager {
 
 
     readBiologicalData() {
-        AppleHealthKit.getDateOfBirth(null, (err: Object, results: Object) => {
+        let d = new Date()
+        let options = {
+            date: d.toISOString()
+        };
+        AppleHealthKit.getDateOfBirth(null, (err, results) => {
             if (this._handleHealthkitError(err, 'getDateOfBirth')) {
                 return;
             }
             console.log(results)
             this._data.age = results.age
-        });
-        AppleHealthKit.getBiologicalSex(null, (err: Object, results: Object) => {
-            if (this._handleHealthkitError(err, 'getBiologicalSex')) {
-                return;
-            }
-            console.log(results)
-            this._data.age = results.value
-        });
+        }).then(
+            AppleHealthKit.getBiologicalSex(null, (err, results) => {
+                if (this._handleHealthkitError(err, 'getBiologicalSex')) {
+                    return;
+                }
+                console.log(results)
+                this._data.sex = results.value
+            })
+        ).then(
+            AppleHealthKit.getStepCount(options, (err, results) => {
+                    if (this._handleHealthkitError(err, 'getStepCount')) {
+                        return;
+                    }
+                    console.log(results)
+                    this._data.stepCount = results.value
+                    if (this.reloadData != null) {
+                        this.reloadData()
+                    }
+                }
+            )
+        )
 
-        AppleHealthKit.getBiologicalSex(null, (err: Object, results: Object) => {
-            if (this._handleHealthkitError(err, 'getBiologicalSex')) {
-                return;
-            }
-            console.log(results)
-            this._data.age = results.value
-        });
 
     }
 
 
+    loadedData() {
+        return this._data.loaded
+    }
+
     getAge() {
+        if (this._data.loaded == false) {
+            this.readBiologicalData()
+        }
+        console.log(this._data.age)
+
         return this._data.age
     }
 
     getSex() {
+        if (this._data.loaded == false) {
+            this.readBiologicalData()
+        }
         return this._data.sex
+    }
+
+    getStepCount() {
+        if (this._data.loaded == false) {
+            this.readBiologicalData()
+        }
+        return this._data.stepCount
     }
 
     // getHeight() {
