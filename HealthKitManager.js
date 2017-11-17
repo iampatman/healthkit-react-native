@@ -103,26 +103,19 @@ export default class HealthKitManager {
     }
 
     getAge() {
-        if (this._data.loaded == false) {
-            this.readBiologicalData()
-        }
         console.log(this._data.age)
 
         return this._data.age
     }
 
     getSex() {
-        if (this._data.loaded == false) {
-            this.readBiologicalData()
-        }
+
         return this._data.sex
     }
 
     getStepCount() {
-        if (this._data.loaded == false) {
-            this.readBiologicalData()
-        }
-        return 10;
+
+        return this._data.stepCount;
     }
 
     //

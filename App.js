@@ -9,7 +9,9 @@ import {
     Platform,
     StyleSheet,
     Text,
-    View
+    View,
+    Alert,
+    Button
 } from 'react-native';
 
 
@@ -54,9 +56,11 @@ export default class App extends Component<{}> {
 
         return (
             <View style={styles.container}>
+
                 <Text>Age: {this.state.age}</Text>
                 <Text>Sex: {this.state.sex}</Text>
                 <Text>Step Count: {this.state.stepCount}</Text>
+                <Button title={'Hello'} onPress={null}></Button>
             </View>
         );
     }
