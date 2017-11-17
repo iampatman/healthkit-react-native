@@ -66,40 +66,40 @@ export default class HealthKitManager {
         let options = {
             date: d.toISOString()
         };
-        AppleHealthKit.getDateOfBirth(null, (err, results) => {
+        AppleHealthKit.getDateOfBirth(null, (err, results: Object) => {
             if (this._handleHealthkitError(err, 'getDateOfBirth')) {
                 return;
             }
             console.log(results)
             this._data.age = results.age
-        }).then(
-            AppleHealthKit.getBiologicalSex(null, (err, results) => {
-                if (this._handleHealthkitError(err, 'getBiologicalSex')) {
+            if (this.reloadData != null) {
+                this.reloadData()
+            }
+        })
+        AppleHealthKit.getBiologicalSex(null, (err: Object, results: Object) => {
+            if (this._handleHealthkitError(err, 'getBiologicalSex')) {
+                return;
+            }
+            console.log(results)
+            this._data.sex = results.value
+            if (this.reloadData != null) {
+                this.reloadData()
+            }
+        })
+
+        AppleHealthKit.getStepCount(options, (err: Object, results: Object) => {
+                if (this._handleHealthkitError(err, 'getStepCount')) {
                     return;
                 }
                 console.log(results)
-                this._data.sex = results.value
-            })
-        ).then(
-            AppleHealthKit.getStepCount(options, (err, results) => {
-                    if (this._handleHealthkitError(err, 'getStepCount')) {
-                        return;
-                    }
-                    console.log(results)
+                if (results != null) {
                     this._data.stepCount = results.value
-                    if (this.reloadData != null) {
-                        this.reloadData()
-                    }
                 }
-            )
+                if (this.reloadData != null) {
+                    this.reloadData()
+                }
+            }
         )
-
-
-    }
-
-
-    loadedData() {
-        return this._data.loaded
     }
 
     getAge() {
@@ -122,12 +122,9 @@ export default class HealthKitManager {
         if (this._data.loaded == false) {
             this.readBiologicalData()
         }
-        return this._data.stepCount
+        return 10;
     }
 
-    // getHeight() {
-    //     return this.state.height
-    // }
     //
     // getWeight() {
     //     return this.state.weight
