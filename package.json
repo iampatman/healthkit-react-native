@@ -9,6 +9,7 @@
 	"dependencies": {
 		"react": "16.0.0",
 		"react-native": "0.50.3",
+		"react-native-google-fit": "^0.3.5",
 		"rn-apple-healthkit": "^0.6.1"
 	},
 	"devDependencies": {
