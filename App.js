@@ -56,7 +56,7 @@ export default class App extends Component<{}> {
 
         return (
             <View style={styles.container}>
-
+                <Text>HealthKit Details</Text>
                 <Text>Age: {this.state.age}</Text>
                 <Text>Sex: {this.state.sex}</Text>
                 <Text>Step Count: {this.state.stepCount}</Text>
