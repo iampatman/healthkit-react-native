@@ -96,10 +96,10 @@ export default class GoogleFitManager {
         };
 
         GoogleFit.getWeightSamples(opt, (err, res) => {
-            console.log('getWeightSamples'+ res);
+            console.log('getWeightSamples' + res);
 
             this._data.weight = res[0].value
-            if (this.reloadData != null){
+            if (this.reloadData != null) {
                 this.reloadData()
             }
         });
@@ -122,18 +122,21 @@ export default class GoogleFitManager {
             res = res.map((source) => (source.steps))
                 .filter(source => source.length > 0)
                 .forEach((source) => {
-                    console.log('src: ' + console.log(source))
-                    source.reduce((record) => {
-                        console.log('record' + record)
-                        total += record.value
-                    })
+                    console.log('src: ' + source)
+                    source.forEach(x => {
+                        console.log(x.value)
+                        total += x.value
 
+                    })
+                    // var subTotal = source.reduce((a, b) => a.value + b.value, 0);
+                    // console.log('subTotal' + subTotal)
+                    // total += subTotal
                 })
 
             console.log('total: ' + total)
             console.log("Daily steps >>>", res);
             this._data.stepCount = total
-            if (this.reloadData != null){
+            if (this.reloadData != null) {
                 this.reloadData()
             }
             return res;
@@ -160,9 +163,4 @@ export default class GoogleFitManager {
     getWeight() {
         return this._data.weight
     }
-    //
-    // getBloodType() {
-    //     return this.state.bloodType
-    // }
-
 }
