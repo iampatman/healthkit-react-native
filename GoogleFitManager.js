@@ -1,9 +1,11 @@
 import GoogleFit from 'react-native-google-fit';
 
-class GoogleFitManager {
+export default class GoogleFitManager {
     reloadData = null
 
     setReloadCallback(callback) {
+        console.log('setReloadCallback')
+
         this.reloadData = callback
     }
 
@@ -22,10 +24,12 @@ class GoogleFitManager {
     static myInstance = null;
 
     static getInstance() {
+        console.log('getInstance')
         if (this.myInstance == null) {
-            this.myInstance = new HealthKitManager();
-        }
+            console.log('create new instance')
 
+            this.myInstance = new GoogleFitManager();
+        }
         return this.myInstance;
     }
 
@@ -33,37 +37,85 @@ class GoogleFitManager {
 
     }
 
+    isEnabled() {
+        console.log('IsEnabled called')
+        GoogleFit.isEnabled((msg, result) => {
+            console.log('IsEnabled return: ')
+
+            console.log(msg + ' ' + result)
+        })
+    }
+
     constructor() {
+        console.log('constructor')
+        this.isEnabled()
         GoogleFit.authorize((err, result) => {
-            if(err) {
-                dispatch('AUTH ERROR');
+            console.log('authorize')
+
+            console.log('result' + result)
+
+            if (err) {
                 return;
             }
-            dispatch('AUTH SUCCESS');
+            this.readBiologicalData()
         });
+        this.readBiologicalData()
     }
 
 
     readBiologicalData() {
+        console.log('readBiologicalData')
         let d = new Date()
         let options = {
             date: d.toISOString()
         };
+        this._saveWeight(100);
+        this._retrieveWeight()
+        this._getStepCount()
 
     }
 
-    _retreiveWeight(){
-        let opt =   {
+    _saveWeight(value) {
+        let opt = {
+            value: value,
+            date: (new Date().toISOString()),
+            unit: "pound"
+        };
+        GoogleFit.saveWeight(opt, (err, res) => {
+            if (err) throw 'Cant save data to the Google Fit';
+        });
+
+    }
+
+    _retrieveWeight() {
+        let opt = {
             unit: 'pound',										// required; default 'kg'
             startDate: "2017-01-01T00:00:17.971Z",		        // required
             endDate: (new Date()).toISOString(),				// required
             ascending: false									// optional; default false
         };
 
-        GoogleFit.getWeightSamples(opt, (err,res) => {
+        GoogleFit.getWeightSamples(opt, (err, res) => {
             console.log(res);
         });
 
+    }
+
+
+    _getStepCount() {
+        console.log('_getStepCount')
+        const options = {
+            startDate: "2017-01-01T00:00:17.971Z",  // required ISO8601Timestamp
+            endDate: (new Date()).toISOString()     // required ISO8601Timestamp
+        };
+
+        GoogleFit.getDailyStepCountSamples(options, (err, res) => {
+            if (err) {
+                throw err;
+            }
+            console.log("Daily steps >>>", res);
+            return res;
+        })
     }
 
     getAge() {
