@@ -20,7 +20,7 @@ export default class AndroidGoogleFit extends React.Component {
     reloadData() {
         this.setState({
                 step: this.googleFitManager.getStepCount(),
-                weight: this.googleFitManager._retrieveWeight()
+                weight: this.googleFitManager.getWeight()
             }
         )
     }

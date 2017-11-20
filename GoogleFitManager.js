@@ -16,7 +16,7 @@ export default class GoogleFitManager {
         sex: 'unknown',
         dob: '',
         height: '',
-        weight: '',
+        weight: 0,
         bloodType: '',
         stepCount: 0
     }
@@ -96,7 +96,12 @@ export default class GoogleFitManager {
         };
 
         GoogleFit.getWeightSamples(opt, (err, res) => {
-            console.log(res);
+            console.log('getWeightSamples'+ res);
+
+            this._data.weight = res[0].value
+            if (this.reloadData != null){
+                this.reloadData()
+            }
         });
 
     }
@@ -113,7 +118,24 @@ export default class GoogleFitManager {
             if (err) {
                 throw err;
             }
+            var total = 0;
+            res = res.map((source) => (source.steps))
+                .filter(source => source.length > 0)
+                .forEach((source) => {
+                    console.log('src: ' + console.log(source))
+                    source.reduce((record) => {
+                        console.log('record' + record)
+                        total += record.value
+                    })
+
+                })
+
+            console.log('total: ' + total)
             console.log("Daily steps >>>", res);
+            this._data.stepCount = total
+            if (this.reloadData != null){
+                this.reloadData()
+            }
             return res;
         })
     }
@@ -134,10 +156,10 @@ export default class GoogleFitManager {
         return this._data.stepCount;
     }
 
-    //
-    // getWeight() {
-    //     return this.state.weight
-    // }
+
+    getWeight() {
+        return this._data.weight
+    }
     //
     // getBloodType() {
     //     return this.state.bloodType
