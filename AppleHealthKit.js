@@ -27,7 +27,7 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
-export default class App extends Component<{}> {
+export default class AppleHealthKit extends Component<{}> {
     healthKitManager = HealthKitManager.getInstance()
 
     constructor() {

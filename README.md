@@ -2,4 +2,4 @@
 
 Use https://github.com/terrillo/rn-apple-healthkit
 
-to read data from iOS HealthKit Devices
+React native integration with Google Fit and HealthKit
