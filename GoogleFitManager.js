@@ -89,7 +89,7 @@ export default class GoogleFitManager {
 
     _retrieveWeight() {
         let opt = {
-            unit: 'pound',										// required; default 'kg'
+            unit: 'kg',										// required; default 'kg'
             startDate: "2017-01-01T00:00:17.971Z",		        // required
             endDate: (new Date()).toISOString(),				// required
             ascending: false									// optional; default false
@@ -97,8 +97,10 @@ export default class GoogleFitManager {
 
         GoogleFit.getWeightSamples(opt, (err, res) => {
             console.log('getWeightSamples' + res);
-
-            this._data.weight = res[0].value
+            res.forEach(x => {
+                console.log(x.value)
+            })
+            this._data.weight = res[res.length - 1].value
             if (this.reloadData != null) {
                 this.reloadData()
             }
